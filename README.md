@@ -127,7 +127,7 @@ options:
 To show dynamic column/value help, run:
   script.py --classification-tsv Cosmic_Classification.tsv --help
 ```
-</details>
+
 
 
 
