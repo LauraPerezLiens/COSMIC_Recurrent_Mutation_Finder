@@ -321,10 +321,25 @@ lentigo 16
 
 4. Show PRIMARY_SITE values only for melanoma rows
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_HISTOLOGY~melanoma' \
   --show PRIMARY_SITE
+```
+Output: 
+```
+# total_rows    7149
+# filtered_rows 376
+# show: PRIMARY_SITE
+PRIMARY_SITE    count
+skin    314
+soft_tissue     42
+eye     14
+large_intestine 2
+meninges        1
+central_nervous_system  1
+```
 
 
 SHOW TWO COLUMNS
@@ -334,25 +349,78 @@ Use --show with two comma-separated columns to inspect combinations.
 
 1. Show PRIMARY_SITE and PRIMARY_HISTOLOGY combinations
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --show PRIMARY_SITE,PRIMARY_HISTOLOGY
+```
+Example output (truncated): 
 
+```
+# total_rows    7149
+# filtered_rows 7149
+# show: PRIMARY_SITE,PRIMARY_HISTOLOGY
+PRIMARY_SITE    PRIMARY_HISTOLOGY       count
+central_nervous_system  glioma  425
+haematopoietic_and_lymphoid_tissue      lymphoid_neoplasm       387
+skin    malignant_melanoma      314
+skin    benign_melanocytic_nevus        288
+skin    adnexal_tumour  239
+haematopoietic_and_lymphoid_tissue      haematopoietic_neoplasm 211
+soft_tissue     rhabdomyosarcoma        205
+lung    carcinoma       183
+...
+```
 
 2. Show PRIMARY_SITE and HISTOLOGY_SUBTYPE_1 combinations for melanoma rows
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_HISTOLOGY~melanoma' \
   --show PRIMARY_SITE,HISTOLOGY_SUBTYPE_1
-
+```
+Example output (truncated):
+```
+# total_rows    7149
+# filtered_rows 376
+# show: PRIMARY_SITE,HISTOLOGY_SUBTYPE_1
+PRIMARY_SITE    HISTOLOGY_SUBTYPE_1     count
+skin    nodular 43
+skin    superficial_spreading   42
+skin    spitzoid        27
+skin    desmoplastic    27
+skin    lentigo_maligna 17
+skin    acral_lentiginous       13
+skin    in_situ_melanotic_neoplasm      9
+skin    epithelioid     8
+...
+```
 
 3. Show PRIMARY_HISTOLOGY and HISTOLOGY_SUBTYPE_1 combinations in skin
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_SITE=skin' \
   --show PRIMARY_HISTOLOGY,HISTOLOGY_SUBTYPE_1
+```
+Example output (truncated):
+```
+# total_rows    7149
+# filtered_rows 1241
+# show: PRIMARY_HISTOLOGY,HISTOLOGY_SUBTYPE_1
+PRIMARY_HISTOLOGY       HISTOLOGY_SUBTYPE_1     count
+adnexal_tumour  malignant_adnexal_tumour        118
+other   seborrhoeic_keratosis   59
+benign_melanocytic_nevus        blue    54
+benign_melanocytic_nevus        Spitz   45
+malignant_melanoma      nodular 43
+malignant_melanoma      superficial_spreading   42
+benign_melanocytic_nevus        compound        33
+carcinoma       Merkel_cell_carcinoma   30
+...
+```
 
 
 INCLUDE MISSING VALUES
@@ -362,10 +430,27 @@ By default the script hides empty values and "NS" in exploration output.
 
 To include them:
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --show SITE_SUBTYPE_1 \
   --include-ns
+```
+Example output (truncated):
+```# total_rows    7149
+# filtered_rows 7149
+# show: SITE_SUBTYPE_1
+SITE_SUBTYPE_1  count
+NS      1489
+fibrous_tissue_and_uncertain_origin     977
+blood_vessel    247
+striated_muscle 240
+nerve_sheath    202
+colon   176
+fat     157
+smooth_muscle   129
+...
+```
 
 
 COMBINING MULTIPLE FILTERS
@@ -373,29 +458,79 @@ COMBINING MULTIPLE FILTERS
 
 1. Skin melanoma only
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_SITE=skin' \
   --where 'PRIMARY_HISTOLOGY~melanoma' \
   --show HISTOLOGY_SUBTYPE_1
-
+```
+Example output (truncated):
+```
+# total_rows    7149
+# filtered_rows 314
+# show: HISTOLOGY_SUBTYPE_1
+HISTOLOGY_SUBTYPE_1     count
+nodular 43
+superficial_spreading   42
+spitzoid        27
+desmoplastic    27
+lentigo_maligna 17
+acral_lentiginous       13
+in_situ_melanotic_neoplasm      9
+epithelioid     8
+...
+```
 
 2. Exclude benign lesions
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_SITE=skin' \
   --where 'PRIMARY_HISTOLOGY!=benign_melanocytic_nevus' \
   --show PRIMARY_HISTOLOGY
+```
+Output:
+```
+# total_rows    7149
+# filtered_rows 953
+# show: PRIMARY_HISTOLOGY
+PRIMARY_HISTOLOGY       count
+malignant_melanoma      314
+adnexal_tumour  239
+other   181
+carcinoma       108
+epidermal_nevus 46
+in_situ_epithelial_neoplasm     25
+Overgrowth_syndrome     24
+lentigo 16
+```
 
 
 3. Regex exclusion
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_SITE=skin' \
   --where 'PRIMARY_HISTOLOGY!~nevus' \
   --show PRIMARY_HISTOLOGY
+```
+Output:
+```
+# total_rows    7149
+# filtered_rows 907
+# show: PRIMARY_HISTOLOGY
+PRIMARY_HISTOLOGY       count
+malignant_melanoma      314
+adnexal_tumour  239
+other   181
+carcinoma       108
+in_situ_epithelial_neoplasm     25
+Overgrowth_syndrome     24
+lentigo 16
+```
 
 
 RUN MODE
@@ -414,6 +549,7 @@ Required arguments for --run:
 
 Example: run the full workflow for melanoma
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --sample-tsv "$SAMPLE" \
@@ -421,18 +557,26 @@ python cosmic_recurrent_mutation_finder.py \
   --where 'PRIMARY_HISTOLOGY~melanoma' \
   --run \
   --outdir ./results_melanoma
+```
 
 
 RUN OUTPUTS
 -----------
 
-The script writes this file inside --outdir:
 
-- mutation_counts.tsv
+The script writes the following file inside `--outdir`.
 
-mutation_counts.tsv contains:
+| File | Description |
+|----|----|
+| `mutation_counts.tsv` | Recurrent mutation counts across the selected samples |
 
-gene    mutation    n_samples
+`mutation_counts.tsv` contains the following columns:
+
+| Column | Description |
+|------|-------------|
+| `gene` | Gene symbol |
+| `mutation` | Protein change or mutation identifier |
+| `n_samples` | Number of samples carrying the mutation |
 
 
 MUTATION MODE
@@ -442,38 +586,36 @@ By default, run mode counts only missense mutations.
 
 Default:
 
+```bash
 --mutation-mode missense
+```
 
 Available options:
 
-- missense
-- protein_changing
-- all
+| Mode               | Description                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| `missense`         | Keeps mutations whose `MUTATION_DESCRIPTION` contains `missense_variant`.                           |
+| `protein_changing` | Keeps variants that produce a protein change (frameshift, stop gained/lost, in-frame indels, etc.). |
+| `all`              | Keeps all mutations found in the selected samples.                                                  |
 
-Mode definitions:
 
-1. missense
-   Keeps mutations whose MUTATION_DESCRIPTION contains:
-   - missense_variant
-
-2. protein_changing
-   Keeps mutations whose MUTATION_DESCRIPTION contains at least one of:
-   - missense_variant
-   - frameshift_variant
-   - stop_gained
-   - stop_lost
-   - start_lost
-   - inframe_insertion
-   - inframe_deletion
-   - protein_altering_variant
-
-3. all
-   Keeps all mutations found in the selected samples.
+Detailed definition of protein_changing: 
+```
+missense_variant
+frameshift_variant
+stop_gained
+stop_lost
+start_lost
+inframe_insertion
+inframe_deletion
+protein_altering_variant
+```
 
 Examples:
 
 1. Default mode: missense only
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --sample-tsv "$SAMPLE" \
@@ -481,10 +623,12 @@ python cosmic_recurrent_mutation_finder.py \
   --where 'PRIMARY_HISTOLOGY~melanoma' \
   --run \
   --outdir ./results_melanoma
+```
 
 
 2. Protein-changing mutations
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --sample-tsv "$SAMPLE" \
@@ -493,10 +637,12 @@ python cosmic_recurrent_mutation_finder.py \
   --run \
   --mutation-mode protein_changing \
   --outdir ./results_melanoma
+```
 
 
 3. All mutations
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --sample-tsv "$SAMPLE" \
@@ -505,60 +651,7 @@ python cosmic_recurrent_mutation_finder.py \
   --run \
   --mutation-mode all \
   --outdir ./results_melanoma
-
-
-SUGGESTED WORKFLOW
-------------------
-
-1. List the available columns
-
-python cosmic_recurrent_mutation_finder.py \
-  --classification-tsv "$CLASS" \
-  --list-columns
-
-
-2. Inspect PRIMARY_SITE
-
-python cosmic_recurrent_mutation_finder.py \
-  --classification-tsv "$CLASS" \
-  --show PRIMARY_SITE
-
-
-3. Inspect histologies inside skin
-
-python cosmic_recurrent_mutation_finder.py \
-  --classification-tsv "$CLASS" \
-  --where 'PRIMARY_SITE=skin' \
-  --show PRIMARY_HISTOLOGY
-
-
-4. Inspect melanoma-related locations
-
-python cosmic_recurrent_mutation_finder.py \
-  --classification-tsv "$CLASS" \
-  --where 'PRIMARY_HISTOLOGY~melanoma' \
-  --show PRIMARY_SITE
-
-
-5. Inspect subtype structure inside the filtered cohort
-
-python cosmic_recurrent_mutation_finder.py \
-  --classification-tsv "$CLASS" \
-  --where 'PRIMARY_SITE=skin' \
-  --where 'PRIMARY_HISTOLOGY~melanoma' \
-  --show HISTOLOGY_SUBTYPE_1,HISTOLOGY_SUBTYPE_2
-
-
-6. Run the full workflow once the filters are defined
-
-python cosmic_recurrent_mutation_finder.py \
-  --classification-tsv "$CLASS" \
-  --sample-tsv "$SAMPLE" \
-  --mutations-tsv "$MUT" \
-  --where 'PRIMARY_HISTOLOGY~melanoma' \
-  --run \
-  --outdir ./results_melanoma
-
+```
 
 NOTES
 -----
@@ -573,7 +666,3 @@ NS values are hidden unless --include-ns is used.
 
 Columns such as COSMIC_PHENOTYPE_ID, NCI_CODE, and EFO exist but are not very useful
 for manual filtering.
-
-If no exploration option or --run is provided, the script prints a message
-explaining that you can either explore the classification table or run the
-full workflow.
