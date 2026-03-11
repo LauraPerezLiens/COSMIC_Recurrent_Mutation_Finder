@@ -139,6 +139,7 @@ python cosmic_recurrent_mutation_finder.py --classification-tsv "$CLASS" --help
 ```
 <details>
 <summary>Full help output</summary>
+
 ```
 usage: cosmic_recurrent_mutation_finder.py [-h] --classification-tsv CLASSIFICATION_TSV [--where WHERE] [--list-columns] [--show SHOW] [--include-ns]
                                          [--run] [--sample-tsv SAMPLE_TSV] [--mutations-tsv MUTATIONS_TSV] [--outdir OUTDIR]
