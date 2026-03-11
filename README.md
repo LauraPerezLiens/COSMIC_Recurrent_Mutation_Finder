@@ -80,6 +80,7 @@ python cosmic_recurrent_mutation_finder.py --help
 ```
 <details>
 <summary>Full help output</summary>
+
 ```
 usage: cosmic_recurrent_mutation_finder.py [-h] --classification-tsv CLASSIFICATION_TSV [--where WHERE] [--list-columns] [--show SHOW] [--include-ns]
                                          [--run] [--sample-tsv SAMPLE_TSV] [--mutations-tsv MUTATIONS_TSV] [--outdir OUTDIR]
@@ -127,7 +128,7 @@ options:
 To show dynamic column/value help, run:
   script.py --classification-tsv Cosmic_Classification.tsv --help
 ```
-
+</details>
 
 
 
