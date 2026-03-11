@@ -1,4 +1,4 @@
-COSMIC CLASSIFICATION EXPLORER
+COSMIC RECURRENT MUTATION FINDER
 ==============================
 
 Script
@@ -51,13 +51,16 @@ GENERAL SYNTAX
 
 Exploration mode:
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv <classification_tsv> \
   [--where <filter>] \
   --show <column_or_column_pair>
+```
 
 Run mode:
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv <classification_tsv> \
   --sample-tsv <sample_tsv> \
@@ -65,7 +68,7 @@ python cosmic_recurrent_mutation_finder.py \
   --where <filter> \
   --run \
   --outdir <output_dir>
-
+```
 
 HELP AND DISCOVERY
 ------------------
@@ -134,7 +137,8 @@ To show dynamic column/value help, run:
 ```bash
 python cosmic_recurrent_mutation_finder.py --classification-tsv "$CLASS" --help
 ```
-
+<details>
+<summary>Full help output</summary>
 ```
 usage: cosmic_recurrent_mutation_finder.py [-h] --classification-tsv CLASSIFICATION_TSV [--where WHERE] [--list-columns] [--show SHOW] [--include-ns]
                                          [--run] [--sample-tsv SAMPLE_TSV] [--mutations-tsv MUTATIONS_TSV] [--outdir OUTDIR]
@@ -189,7 +193,7 @@ Available columns and example filter values:
   - HISTOLOGY_SUBTYPE_2: 314 unique values; top values: 'anaplastic' (78), 'glioblastoma_multiforme' (40), 'low_grade_dysplasia' (37), 'pilocytic' (33), 'spindle_cell' (32), 'high_grade_dysplasia' (32), 'fibrillary' (30), 'pleomorphic_xanthoastrocytoma' (28)
   - HISTOLOGY_SUBTYPE_3: 39 unique values; top values: 'congenital_neutropenia' (7), 'associated_with_other_haematological_disorder' (4), 't(8;21)' (3), 'chronic_idiopathic_neutropenia' (2), 'sarcoma' (2), 'aggressive_and_associated_with_other_haematological_disorder' (2), 'aplastic_anaemia' (2), 't(15;17)' (1)
   ```
-
+</details>
 
 3. Print column names only
 
@@ -198,6 +202,8 @@ python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --list-columns
 ```
+Output: 
+
 ```
 COSMIC_PHENOTYPE_ID
 PRIMARY_SITE
@@ -212,31 +218,23 @@ NCI_CODE
 EFO
 ```
 
-EXPLORATION LOGIC
------------------
-
-The intended workflow is:
-
-1. List available columns
-2. Show values for one column
-3. Apply one or more filters with --where
-4. Show another column or a pair of columns inside the filtered subset
-5. Once the cohort is well defined, run the full workflow with --run
-
-
 FILTER SYNTAX
 -------------
 
 The script supports these filters:
 
-COL=value     exact match
-COL!=value    exact mismatch
-COL~regex     regex match
-COL!~regex    regex exclusion
+| Filter | Meaning |
+|------|--------|
+| `COL=value` | exact match |
+| `COL!=value` | exact mismatch |
+| `COL~regex` | regex match |
+| `COL!~regex` | regex exclusion |
 
 Filters can be repeated:
 
+```bash
 --where condition1 --where condition2
+```
 
 Multiple filters are combined using logical AND.
 
@@ -271,7 +269,6 @@ upper_aerodigestive_tract       205
 ...
 ```
 
-
 2. Show PRIMARY_HISTOLOGY values
 
 ```bash 
@@ -298,11 +295,28 @@ haematopoietic_neoplasm 211
 
 3. Show PRIMARY_HISTOLOGY values only in skin samples
 
+```bash
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_SITE=skin' \
   --show PRIMARY_HISTOLOGY
+```
+Output:
 
+```# total_rows    7149
+# filtered_rows 1241
+# show: PRIMARY_HISTOLOGY
+PRIMARY_HISTOLOGY       count
+malignant_melanoma      314
+benign_melanocytic_nevus        288
+adnexal_tumour  239
+other   181
+carcinoma       108
+epidermal_nevus 46
+in_situ_epithelial_neoplasm     25
+Overgrowth_syndrome     24
+lentigo 16
+```
 
 4. Show PRIMARY_SITE values only for melanoma rows
 
