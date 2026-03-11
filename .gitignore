@@ -1,0 +1,8 @@
+# COSMIC datasets
+Cosmic_Classification_Tsv_v103_GRCh38/
+Cosmic_Sample_Tsv_v103_GRCh38/
+Cosmic_GenomeScreensMutant_Tsv_v103_GRCh38/
+
+# python
+__pycache__/
+*.pyc
