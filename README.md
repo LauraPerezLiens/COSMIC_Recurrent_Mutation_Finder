@@ -254,6 +254,7 @@ python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --show PRIMARY_SITE
 ```
+Example output (truncated):
 ```
 # total_rows    7149
 # filtered_rows 7149
@@ -267,57 +268,33 @@ bone    451
 large_intestine 317
 lung    252
 upper_aerodigestive_tract       205
-salivary_gland  200
-ovary   83
-breast  78
-kidney  75
-genital_tract   71
-pancreas        65
-autonomic_ganglia       63
-urinary_tract   61
-pituitary       58
-small_intestine 55
-endometrium     55
-adrenal_gland   50
-stomach 44
-biliary_tract   44
-oesophagus      40
-meninges        40
-eye     39
-thyroid 36
-cervix  34
-testis  33
-peritoneum      24
-liver   19
-thymus  16
-gastrointestinal_tract_(site_indeterminate)     16
-midline_organs  14
-prostate        13
-vulva   13
-penis   9
-pleura  8
-placenta        8
-fallopian_tube  7
-female_genital_tract_(site_indeterminate)       6
-vagina  5
-parathyroid     5
-paratesticular_tissues  4
-perineum        3
-pericardium     2
-mediastinum     2
-lymph_node      1
-female_genitourinary_system     1
-uterine_adnexa  1
-retroperitoneum 1
+...
 ```
 
 
 2. Show PRIMARY_HISTOLOGY values
 
+```bash 
 python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --show PRIMARY_HISTOLOGY
-
+```
+Example output (truncated):
+```
+# total_rows    7149
+# filtered_rows 7149
+# show: PRIMARY_HISTOLOGY
+PRIMARY_HISTOLOGY       count
+carcinoma       1035
+other   889
+glioma  425
+lymphoid_neoplasm       388
+malignant_melanoma      334
+benign_melanocytic_nevus        295
+adnexal_tumour  240
+haematopoietic_neoplasm 211
+...
+```
 
 3. Show PRIMARY_HISTOLOGY values only in skin samples
 
