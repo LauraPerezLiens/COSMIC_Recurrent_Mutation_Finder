@@ -3,7 +3,7 @@ COSMIC CLASSIFICATION EXPLORER
 
 Script
 ------
-cosmic_classification_explorer.py
+cosmic_recurrent_mutation_finder.py
 
 Purpose
 -------
@@ -54,14 +54,14 @@ GENERAL SYNTAX
 
 Exploration mode:
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv <classification_tsv> \
   [--where <filter>] \
   --show <column_or_column_pair>
 
 Run mode:
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv <classification_tsv> \
   --sample-tsv <sample_tsv> \
   --mutations-tsv <mutations_tsv> \
@@ -75,20 +75,142 @@ HELP AND DISCOVERY
 
 1. Show standard help
 
-python cosmic_classification_explorer.py --help
+```bash
+python cosmic_recurrent_mutation_finder.py --help
+```
+
+```
+usage: cosmic_recurrent_mutation_finder.py [-h] --classification-tsv CLASSIFICATION_TSV [--where WHERE] [--list-columns] [--show SHOW] [--include-ns]
+                                         [--run] [--sample-tsv SAMPLE_TSV] [--mutations-tsv MUTATIONS_TSV] [--outdir OUTDIR]
+                                         [--mutation-mode {missense,protein_changing,all}]
+
+Explore Cosmic_Classification TSV files and optionally run the full phenotype/sample/mutation workflow.
+
+Exploration idea:
+  1. List the available columns
+  2. Show values for one column
+  3. Apply filters with --where
+  4. Show another column or a two-column combination
+  5. Run the final workflow with --run
+
+Filter syntax:
+  COL=value     exact match
+  COL!=value    exact mismatch
+  COL~regex     regex match
+  COL!~regex    regex exclusion
+
+Examples:
+  --classification-tsv Cosmic_Classification.tsv --list-columns
+  --classification-tsv Cosmic_Classification.tsv --show PRIMARY_SITE
+  --classification-tsv Cosmic_Classification.tsv --where 'PRIMARY_SITE=skin' --show PRIMARY_HISTOLOGY
+  --classification-tsv Cosmic_Classification.tsv --where 'PRIMARY_HISTOLOGY~melanoma' --show PRIMARY_SITE,HISTOLOGY_SUBTYPE_1
+  --classification-tsv Cosmic_Classification.tsv --sample-tsv Cosmic_Sample.tsv --mutations-tsv Cosmic_GenomeScreensMutant.tsv --where 'PRIMARY_HISTOLOGY~melanoma' --run --outdir results
+
+options:
+  -h, --help            show this help message and exit
+  --classification-tsv CLASSIFICATION_TSV
+                        Path to Cosmic_Classification TSV or TSV.GZ file.
+  --where WHERE         Filter condition. Can be repeated.
+  --list-columns        Print column names and exit.
+  --show SHOW           Show value counts for one column or combination counts for two columns. Use COL or COL1,COL2.
+  --include-ns          Include empty values and 'NS' in exploration output.
+  --run                 Run the full phenotype/sample/mutation workflow.
+  --sample-tsv SAMPLE_TSV
+                        Path to Cosmic_Sample TSV or TSV.GZ file.
+  --mutations-tsv MUTATIONS_TSV
+                        Path to Cosmic_GenomeScreensMutant TSV or TSV.GZ file.
+  --outdir OUTDIR       Output directory for mutation counts.
+  --mutation-mode {missense,protein_changing,all}
+                        Mutation filtering mode for --run. Default: missense. 'protein_changing' keeps variants with protein-changing consequence terms, 'all' keeps all mutations.
+
+To show dynamic column/value help, run:
+  script.py --classification-tsv Cosmic_Classification.tsv --help
+```
+
 
 
 2. Show help including detected columns and example values
 
-python cosmic_classification_explorer.py --classification-tsv "$CLASS" --help
+```bash
+python cosmic_recurrent_mutation_finder.py --classification-tsv "$CLASS" --help
+```
+
+```
+usage: cosmic_recurrent_mutation_finder.py [-h] --classification-tsv CLASSIFICATION_TSV [--where WHERE] [--list-columns] [--show SHOW] [--include-ns]
+                                         [--run] [--sample-tsv SAMPLE_TSV] [--mutations-tsv MUTATIONS_TSV] [--outdir OUTDIR]
+                                         [--mutation-mode {missense,protein_changing,all}]
+
+Explore Cosmic_Classification TSV files and optionally run the full phenotype/sample/mutation workflow.
+
+Exploration idea:
+  1. List the available columns
+  2. Show values for one column
+  3. Apply filters with --where
+  4. Show another column or a two-column combination
+  5. Run the final workflow with --run
+
+Filter syntax:
+  COL=value     exact match
+  COL!=value    exact mismatch
+  COL~regex     regex match
+  COL!~regex    regex exclusion
+
+Examples:
+  --classification-tsv Cosmic_Classification.tsv --list-columns
+  --classification-tsv Cosmic_Classification.tsv --show PRIMARY_SITE
+  --classification-tsv Cosmic_Classification.tsv --where 'PRIMARY_SITE=skin' --show PRIMARY_HISTOLOGY
+  --classification-tsv Cosmic_Classification.tsv --where 'PRIMARY_HISTOLOGY~melanoma' --show PRIMARY_SITE,HISTOLOGY_SUBTYPE_1
+  --classification-tsv Cosmic_Classification.tsv --sample-tsv Cosmic_Sample.tsv --mutations-tsv Cosmic_GenomeScreensMutant.tsv --where 'PRIMARY_HISTOLOGY~melanoma' --run --outdir results
+
+options:
+  -h, --help            show this help message and exit
+  --classification-tsv CLASSIFICATION_TSV
+                        Path to Cosmic_Classification TSV or TSV.GZ file.
+  --where WHERE         Filter condition. Can be repeated.
+  --list-columns        Print column names and exit.
+  --show SHOW           Show value counts for one column or combination counts for two columns. Use COL or COL1,COL2.
+  --include-ns          Include empty values and 'NS' in exploration output.
+  --run                 Run the full phenotype/sample/mutation workflow.
+  --sample-tsv SAMPLE_TSV
+                        Path to Cosmic_Sample TSV or TSV.GZ file.
+  --mutations-tsv MUTATIONS_TSV
+                        Path to Cosmic_GenomeScreensMutant TSV or TSV.GZ file.
+  --outdir OUTDIR       Output directory for mutation counts.
+  --mutation-mode {missense,protein_changing,all}
+                        Mutation filtering mode for --run. Default: missense. 'protein_changing' keeps variants with protein-changing consequence terms, 'all' keeps all mutations.
+
+Available columns and example filter values:
+  - PRIMARY_SITE: 50 unique values; top values: 'soft_tissue' (2029), 'skin' (1241), 'haematopoietic_and_lymphoid_tissue' (616), 'central_nervous_system' (604), 'bone' (451), 'large_intestine' (317), 'lung' (252), 'upper_aerodigestive_tract' (205)
+  - SITE_SUBTYPE_1: 308 unique values; top values: 'fibrous_tissue_and_uncertain_origin' (977), 'blood_vessel' (247), 'striated_muscle' (240), 'nerve_sheath' (202), 'colon' (176), 'fat' (157), 'smooth_muscle' (129), 'mouth' (85)
+  - SITE_SUBTYPE_2: 276 unique values; top values: 'upper_leg' (67), 'retroperitoneum' (52), 'leg' (47), 'arm' (45), 'foot' (45), 'pelvis' (45), 'abdomen' (44), 'shoulder' (44)
+  - SITE_SUBTYPE_3: 'arm' (1), 'breast' (1), 'chest' (1), 'ethmoid' (11), 'face' (1), 'fossa_of_Rosenmuller' (1), 'groin' (1), 'maxillary' (11), 'paranasal' (7), 'piriform_sinus' (2), 'scalp' (1), 'sphenoid' (4)
+  - PRIMARY_HISTOLOGY: 215 unique values; top values: 'carcinoma' (1035), 'other' (889), 'glioma' (425), 'lymphoid_neoplasm' (388), 'malignant_melanoma' (334), 'benign_melanocytic_nevus' (295), 'adnexal_tumour' (240), 'haematopoietic_neoplasm' (211)
+  - HISTOLOGY_SUBTYPE_1: 911 unique values; top values: 'squamous_cell_carcinoma' (125), 'adenocarcinoma' (120), 'malignant_adnexal_tumour' (119), 'pleomorphic' (112), 'embryonal' (101), 'seborrhoeic_keratosis' (59), 'astrocytoma_Grade_I' (56), 'blue' (55)
+  - HISTOLOGY_SUBTYPE_2: 314 unique values; top values: 'anaplastic' (78), 'glioblastoma_multiforme' (40), 'low_grade_dysplasia' (37), 'pilocytic' (33), 'spindle_cell' (32), 'high_grade_dysplasia' (32), 'fibrillary' (30), 'pleomorphic_xanthoastrocytoma' (28)
+  - HISTOLOGY_SUBTYPE_3: 39 unique values; top values: 'congenital_neutropenia' (7), 'associated_with_other_haematological_disorder' (4), 't(8;21)' (3), 'chronic_idiopathic_neutropenia' (2), 'sarcoma' (2), 'aggressive_and_associated_with_other_haematological_disorder' (2), 'aplastic_anaemia' (2), 't(15;17)' (1)
+  ```
 
 
 3. Print column names only
 
-python cosmic_classification_explorer.py \
+```bash
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --list-columns
-
+```
+```
+COSMIC_PHENOTYPE_ID
+PRIMARY_SITE
+SITE_SUBTYPE_1
+SITE_SUBTYPE_2
+SITE_SUBTYPE_3
+PRIMARY_HISTOLOGY
+HISTOLOGY_SUBTYPE_1
+HISTOLOGY_SUBTYPE_2
+HISTOLOGY_SUBTYPE_3
+NCI_CODE
+EFO
+```
 
 EXPLORATION LOGIC
 -----------------
@@ -127,21 +249,79 @@ and their counts.
 
 1. Show PRIMARY_SITE values
 
-python cosmic_classification_explorer.py \
+```bash 
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --show PRIMARY_SITE
+```
+```
+# total_rows    7149
+# filtered_rows 7149
+# show: PRIMARY_SITE
+PRIMARY_SITE    count
+soft_tissue     2029
+skin    1241
+haematopoietic_and_lymphoid_tissue      616
+central_nervous_system  604
+bone    451
+large_intestine 317
+lung    252
+upper_aerodigestive_tract       205
+salivary_gland  200
+ovary   83
+breast  78
+kidney  75
+genital_tract   71
+pancreas        65
+autonomic_ganglia       63
+urinary_tract   61
+pituitary       58
+small_intestine 55
+endometrium     55
+adrenal_gland   50
+stomach 44
+biliary_tract   44
+oesophagus      40
+meninges        40
+eye     39
+thyroid 36
+cervix  34
+testis  33
+peritoneum      24
+liver   19
+thymus  16
+gastrointestinal_tract_(site_indeterminate)     16
+midline_organs  14
+prostate        13
+vulva   13
+penis   9
+pleura  8
+placenta        8
+fallopian_tube  7
+female_genital_tract_(site_indeterminate)       6
+vagina  5
+parathyroid     5
+paratesticular_tissues  4
+perineum        3
+pericardium     2
+mediastinum     2
+lymph_node      1
+female_genitourinary_system     1
+uterine_adnexa  1
+retroperitoneum 1
+```
 
 
 2. Show PRIMARY_HISTOLOGY values
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --show PRIMARY_HISTOLOGY
 
 
 3. Show PRIMARY_HISTOLOGY values only in skin samples
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_SITE=skin' \
   --show PRIMARY_HISTOLOGY
@@ -149,7 +329,7 @@ python cosmic_classification_explorer.py \
 
 4. Show PRIMARY_SITE values only for melanoma rows
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_HISTOLOGY~melanoma' \
   --show PRIMARY_SITE
@@ -162,14 +342,14 @@ Use --show with two comma-separated columns to inspect combinations.
 
 1. Show PRIMARY_SITE and PRIMARY_HISTOLOGY combinations
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --show PRIMARY_SITE,PRIMARY_HISTOLOGY
 
 
 2. Show PRIMARY_SITE and HISTOLOGY_SUBTYPE_1 combinations for melanoma rows
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_HISTOLOGY~melanoma' \
   --show PRIMARY_SITE,HISTOLOGY_SUBTYPE_1
@@ -177,7 +357,7 @@ python cosmic_classification_explorer.py \
 
 3. Show PRIMARY_HISTOLOGY and HISTOLOGY_SUBTYPE_1 combinations in skin
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_SITE=skin' \
   --show PRIMARY_HISTOLOGY,HISTOLOGY_SUBTYPE_1
@@ -190,7 +370,7 @@ By default the script hides empty values and "NS" in exploration output.
 
 To include them:
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --show SITE_SUBTYPE_1 \
   --include-ns
@@ -201,7 +381,7 @@ COMBINING MULTIPLE FILTERS
 
 1. Skin melanoma only
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_SITE=skin' \
   --where 'PRIMARY_HISTOLOGY~melanoma' \
@@ -210,7 +390,7 @@ python cosmic_classification_explorer.py \
 
 2. Exclude benign lesions
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_SITE=skin' \
   --where 'PRIMARY_HISTOLOGY!=benign_melanocytic_nevus' \
@@ -219,7 +399,7 @@ python cosmic_classification_explorer.py \
 
 3. Regex exclusion
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_SITE=skin' \
   --where 'PRIMARY_HISTOLOGY!~nevus' \
@@ -242,7 +422,7 @@ Required arguments for --run:
 
 Example: run the full workflow for melanoma
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --sample-tsv "$SAMPLE" \
   --mutations-tsv "$MUT" \
@@ -302,7 +482,7 @@ Examples:
 
 1. Default mode: missense only
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --sample-tsv "$SAMPLE" \
   --mutations-tsv "$MUT" \
@@ -313,7 +493,7 @@ python cosmic_classification_explorer.py \
 
 2. Protein-changing mutations
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --sample-tsv "$SAMPLE" \
   --mutations-tsv "$MUT" \
@@ -325,7 +505,7 @@ python cosmic_classification_explorer.py \
 
 3. All mutations
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --sample-tsv "$SAMPLE" \
   --mutations-tsv "$MUT" \
@@ -340,21 +520,21 @@ SUGGESTED WORKFLOW
 
 1. List the available columns
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --list-columns
 
 
 2. Inspect PRIMARY_SITE
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --show PRIMARY_SITE
 
 
 3. Inspect histologies inside skin
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_SITE=skin' \
   --show PRIMARY_HISTOLOGY
@@ -362,7 +542,7 @@ python cosmic_classification_explorer.py \
 
 4. Inspect melanoma-related locations
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_HISTOLOGY~melanoma' \
   --show PRIMARY_SITE
@@ -370,7 +550,7 @@ python cosmic_classification_explorer.py \
 
 5. Inspect subtype structure inside the filtered cohort
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --where 'PRIMARY_SITE=skin' \
   --where 'PRIMARY_HISTOLOGY~melanoma' \
@@ -379,7 +559,7 @@ python cosmic_classification_explorer.py \
 
 6. Run the full workflow once the filters are defined
 
-python cosmic_classification_explorer.py \
+python cosmic_recurrent_mutation_finder.py \
   --classification-tsv "$CLASS" \
   --sample-tsv "$SAMPLE" \
   --mutations-tsv "$MUT" \
