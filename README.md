@@ -29,25 +29,22 @@ running the full phenotype/sample/mutation workflow in a single script.
 
 INPUT FILES
 -----------
+```markdown
+Example input files:
 
-Classification TSV example:
-
-./Cosmic_Classification_Tsv_v103_GRCh38/Cosmic_Classification_v103_GRCh38.tsv
-
-Sample TSV example:
-
-./Cosmic_Sample_Tsv_v103_GRCh38/Cosmic_Sample_v103_GRCh38.tsv
-
-Mutations TSV example:
-
-./Cosmic_GenomeScreensMutant_Tsv_v103_GRCh38/Cosmic_GenomeScreensMutant_v103_GRCh38.tsv
+| Dataset | Path |
+|-------|------|
+| Classification TSV | `./Cosmic_Classification_Tsv_v103_GRCh38/Cosmic_Classification_v103_GRCh38.tsv` |
+| Sample TSV | `./Cosmic_Sample_Tsv_v103_GRCh38/Cosmic_Sample_v103_GRCh38.tsv` |
+| Mutations TSV | `./Cosmic_GenomeScreensMutant_Tsv_v103_GRCh38/Cosmic_GenomeScreensMutant_v103_GRCh38.tsv` |
 
 For convenience you can define:
 
+```bash
 CLASS=./Cosmic_Classification_Tsv_v103_GRCh38/Cosmic_Classification_v103_GRCh38.tsv
 SAMPLE=./Cosmic_Sample_Tsv_v103_GRCh38/Cosmic_Sample_v103_GRCh38.tsv
 MUT=./Cosmic_GenomeScreensMutant_Tsv_v103_GRCh38/Cosmic_GenomeScreensMutant_v103_GRCh38.tsv
-
+```
 
 GENERAL SYNTAX
 --------------
